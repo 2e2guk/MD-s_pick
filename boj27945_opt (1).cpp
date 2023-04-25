@@ -1,5 +1,5 @@
 // boj 27945 슬슬 가지를 먹기 않으면 죽는다
-// 실행 시간 280ms 메모리 17364KB
+// 실행 시간 252ms 메모리 17364KB
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -61,7 +61,9 @@ pair<int, vector<Edge>> kruskal_opt(int n, const vector<Edge>& edges) {
     priority_queue<Edge> pq(edges.begin(), edges.end());
     int edge_count = 0;
 
-    while (!pq.empty() && edge_count < n - 1) {
+    while (!pq.empty()) {
+
+        if(edge_count == n - 1) break;
         Edge edge = pq.top();
         pq.pop();
 
@@ -72,23 +74,7 @@ pair<int, vector<Edge>> kruskal_opt(int n, const vector<Edge>& edges) {
             edge_count++;
         }
     }
-
     return make_pair(mst_cost, mst_edges);
-}
-
-// MEX란, 주어진 집합에 포함되지 않은 가장 작은 양의 정수이다.
-// 예를 들어 주어진 집합이 {0, 1, 2, 4, 5}라고 가정해보자.
-// 이 경우, 3은 집합에 포함되지 않은 가장 작은 양의 정수이므로 MEX는 3이다.
-int find_mex(const set<int>& weights) {
-    int mex = 1;
-    for (const auto& weight : weights) {
-        if (weight == mex) {
-            mex++;
-        } else {
-            break;
-        }
-    }
-    return mex;
 }
 
 int main() {
@@ -105,12 +91,22 @@ int main() {
 
     pair<int, vector<Edge>> MST = kruskal_opt(n, edges);
 
-    set<int> weights;
+    bool has_one = false;
+    int mex = 1;
+
     for (const auto& edge : MST.second) {
-        weights.insert(edge.weight);
+        if (edge.weight == 1) {
+            has_one = true;
+        } else if (has_one && edge.weight != mex) {
+            break;
+        }
+        mex++;
     }
 
-    int mex = find_mex(weights);
+    if (!has_one) {
+        mex = 1;
+    }
+
     cout << mex;
 
     return 0;
