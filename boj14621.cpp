@@ -1,4 +1,5 @@
 //boj 14621 나만 안되는 연애
+// 메모리 2536kb, 실행시간 4ms
 #include <iostream>
 #include <vector>
 #include <queue>
